@@ -1,0 +1,232 @@
+<!-- shopapp/templates/shopapp/index.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}GretskieOreshkiShop - Лучшие греческие орехи с доставкой{% endblock %}
+
+{% block content %}
+<!-- Главный баннер -->
+<div class="bg-success text-white rounded-3 p-5 mb-5"
+     style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="display-4 fw-bold mb-3">
+                Натуральные греческие орехи
+            </h1>
+            <p class="lead mb-4">
+                Отборные орехи прямо из Греции. Бесплатная доставка при заказе от 3000 ₽
+            </p>
+            <div class="d-flex gap-2">
+                <a href="{% url 'catalog' %}" class="btn btn-light btn-lg text-success fw-bold">
+                    <i class="fas fa-shopping-bag me-2"></i>В каталог
+                </a>
+                <a href="{% url 'sales' %}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-percent me-2"></i>Акции
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <i class="fas fa-seedling fa-5x text-warning"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Преимущества -->
+<div class="row mb-5">
+    <div class="col-md-3 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-truck-fast fa-3x text-success mb-3"></i>
+                <h5>Быстрая доставка</h5>
+                <p class="text-muted small">Доставка по РФ от 1 дня</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-medal fa-3x text-warning mb-3"></i>
+                <h5>Гарантия качества</h5>
+                <p class="text-muted small">Сертифицированная продукция</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-leaf fa-3x text-success mb-3"></i>
+                <h5>100% Органика</h5>
+                <p class="text-muted small">Натуральные продукты</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-ruble-sign fa-3x text-primary mb-3"></i>
+                <h5>Выгодные цены</h5>
+                <p class="text-muted small">Скидки до 30%</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Категории -->
+{% if popular_categories %}
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-th-large text-success"></i> Популярные категории
+        </h2>
+        <a href="{% url 'catalog' %}" class="btn btn-outline-success">Все категории</a>
+    </div>
+    <div class="row">
+        {% for category in popular_categories %}
+        <div class="col-6 col-md-3 mb-3">
+            <a href="{% url 'category' category.slug %}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="{{ category.icon }} fa-3x text-success mb-3"></i>
+                        <h6 class="card-title text-dark">{{ category.name }}</h6>
+                        <small class="text-muted">{{ category.cnt|default:category.get_products_count }} товаров</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Хиты продаж -->
+{% if hit_products %}
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-fire text-danger"></i> Хиты продаж
+        </h2>
+        <a href="{% url 'hits' %}" class="btn btn-outline-danger">Все хиты</a>
+    </div>
+    <div class="row">
+        {% for product in hit_products %}
+        <div class="col-6 col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if product.discount %}
+                <div class="position-absolute top-0 start-0 m-2">
+                    <span class="badge bg-danger">-{{ product.discount }}%</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none text-dark">
+                            {{ product.name }}
+                        </a>
+                    </h6>
+                    <p class="text-muted small mb-2">{{ product.weight }}</p>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            {% if product.old_price %}
+                            <small class="text-muted text-decoration-line-through">
+                                {{ product.old_price|intcomma }} ₽
+                            </small>
+                            <br>
+                            {% endif %}
+                            <span class="h5 text-success fw-bold">
+                                {{ product.price|intcomma }} ₽
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- ФОРМА ДОБАВЛЕНИЯ В КОРЗИНУ -->
+                    <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm w-100">
+                            <i class="fas fa-cart-plus me-1"></i>В корзину
+                        </button></form>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Новинки -->
+{% if new_products %}
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-star text-primary"></i> Новинки
+        </h2>
+        <a href="{% url 'news' %}" class="btn btn-outline-primary">Все новинки</a>
+    </div>
+    <div class="row">
+        {% for product in new_products %}
+        <div class="col-6 col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if product.is_new %}
+                <div class="position-absolute top-0 start-0 m-2">
+                    <span class="badge bg-primary">Новинка</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none text-dark">
+                            {{ product.name }}
+                        </a>
+                    </h6>
+                    <p class="text-muted small mb-2">{{ product.weight }}</p>
+                    <div class="mb-2">
+                        <span class="h5 text-success fw-bold">{{ product.price|intcomma }} ₽</span>
+                    </div>
+
+                    <!-- ФОРМА ДОБАВЛЕНИЯ В КОРЗИНУ -->
+                    <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm w-100">
+                            <i class="fas fa-cart-plus me-1"></i>В корзину
+                        </button></form>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Если нет товаров -->
+{% if not hit_products and not new_products %}
+<div class="text-center py-5 my-5">
+    <i class="fas fa-box-open fa-5x text-muted mb-4"></i>
+    <h3>Товары скоро появятся</h3>
+    <p class="text-muted">Мы обновляем ассортимент. Следите за новинками!</p>
+    <a href="{% url 'admin:index' %}" class="btn btn-success btn-lg">
+        <i class="fas fa-cog me-2"></i>Перейти в админ-панель
+    </a>
+</div>
+{% endif %}
+
+<!-- Подписка на рассылку -->
+<section class="bg-success text-white p-5 rounded-3 mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h3><i class="fas fa-envelope-open-text me-2"></i>Подпишитесь на рассылку!</h3>
+            <p class="lead">Узнавайте первыми о скидках, акциях и новинках</p>
+        </div>
+        <div class="col-md-6">
+            <form class="d-flex" method="POST" action="{% url 'subscribe' %}">
+                {% csrf_token %}
+                <input type="email" name="email" class="form-control form-control-lg"
+                       placeholder="Введите ваш email" required>
+                <button type="submit" class="btn btn-warning btn-lg ms-2 text-nowrap">
+                    <i class="fas fa-paper-plane me-2"></i>Подписаться
+                </button></form>
+            </form>
+            <small class="mt-2 d-block">Никакого спама, только полезная информация</small>
+        </div>
+    </div>
+</section>
+{% endblock %}

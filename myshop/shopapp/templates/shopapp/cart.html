@@ -1,0 +1,49 @@
+<!-- shopapp/templates/shopapp/cart.html -->
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Корзина - GretskieOreshkiShop{% endblock %}
+
+{% block content %}
+<h1 class="mb-4"><i class="fas fa-shopping-cart text-success"></i> Корзина</h1>
+
+{% if cart_items %}
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Товар</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Сумма</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product.price|intcomma }} ₽</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.total_price|intcomma }} ₽</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-end"><strong>Итого:</strong></td>
+                <td><strong>{{ cart_total|intcomma }} ₽</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <a href="#" class="btn btn-success btn-lg">Оформить заказ</a>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-shopping-cart fa-4x text-muted mb-3"></i>
+    <h3>Ваша корзина пуста</h3>
+    <p>Добавьте товары из каталога</p>
+    <a href="{% url 'catalog' %}" class="btn btn-success btn-lg">Перейти в каталог</a>
+</div>
+{% endif %}
+{% endblock %}

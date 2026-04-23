@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Регистрация - GretskieOreshkiShop{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h3 class="text-center mb-4">
+                    <i class="fas fa-user-plus text-success me-2"></i>
+                    Регистрация
+                </h3>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.last_name|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    {{ form.username|as_crispy_field }}
+                    {{ form.email|as_crispy_field }}
+                    {{ form.phone|as_crispy_field }}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.password1|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form.password2|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" required id="agree">
+                        <label class="form-check-label" for="agree">
+                            Я согласен с <a href="#">условиями использования</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-user-check me-2"></i>Зарегистрироваться
+                    </button></form>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p>Уже есть аккаунт?</p>
+                    <a href="{% url 'login' %}" class="btn btn-outline-success">
+                        <i class="fas fa-sign-in-alt me-2"></i>Войти
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

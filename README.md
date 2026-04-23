@@ -2,19 +2,19 @@
 yet another project
 
 ### Abstract High-level design
-![c4](с4.png)
+![c4](etc/с4.png)
 
 ### Концептуальная модель данных
-![erd](erd.png)
+![erd](etc/erd.png)
 
 ### Concrete High-level design
-![concretec4](concretec4.png)
+![concretec4](etc/concretec4.png)
 
 ### Low-level design
-![lowlvl](lowlvl.png)
+![lowlvl](etc/lowlvl.png)
 
 ### Логическая модель данных
-![logicer](logicer.png)
+![logicer](etc/logicer.png)
 
 # ADR-001: Кэширование каталога товаров
 

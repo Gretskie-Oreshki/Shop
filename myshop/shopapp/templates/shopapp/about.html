@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}about - GretskieOreshkiShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            {% if page == 'about' %}О нас
+            {% elif page == 'delivery' %}Доставка
+            {% elif page == 'contacts' %}Контакты
+            {% elif page == 'how_to_order' %}Как заказать
+            {% elif page == 'returns' %}Возврат
+            {% elif page == 'faq' %}Вопросы и ответы
+            {% elif page == 'search_results' %}Результаты поиска
+            {% elif page == 'sales' %}Акции
+            {% elif page == 'hits' %}Хиты продаж
+            {% elif page == 'news' %}Новинки
+            {% elif page == 'favorites' %}Избранное
+            {% elif page == 'orders' %}Заказы
+            {% endif %}
+        </h1>
+        
+        <p>Страница в разработке. Скоро здесь будет контент.</p>
+    </div>
+</div>
+{% endblock %}

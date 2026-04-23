@@ -1,0 +1,49 @@
+<!-- shopapp/templates/shopapp/product_detail.html -->
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}{{ product.name }} - GretskieOreshkiShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body text-center bg-light p-5">
+                <i class="fas fa-box fa-5x text-success"></i>
+                <p class="text-muted mt-2">Изображение товара</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'catalog' %}">Каталог</a></li>
+                <li class="breadcrumb-item active">{{ product.name }}</li>
+            </ol>
+        </nav>
+
+        <h1>{{ product.name }}</h1>
+        <p class="text-muted">Артикул: {{ product.sku }}</p>
+        <p class="text-muted">Категория: {{ product.category.name }}</p>
+
+        <div class="bg-light p-3 rounded mb-3">
+            {% if product.old_price %}
+            <p class="text-muted text-decoration-line-through mb-0">{{ product.old_price|intcomma }} ₽</p>
+            {% endif %}
+            <p class="h2 text-success fw-bold">{{ product.price|intcomma }} ₽</p>
+        </div>
+
+        <p><strong>Вес:</strong> {{ product.weight }}</p>
+        <p><strong>В наличии:</strong> {{ product.stock }} шт.</p>
+
+        <p>{{ product.description }}</p>
+
+        <button class="btn btn-success btn-lg w-100 add-to-cart"
+                data-product-id="{{ product.id }}">
+            <i class="fas fa-cart-plus me-2"></i>Добавить в корзину
+        </button></form>
+    </div>
+</div>
+{% endblock %}

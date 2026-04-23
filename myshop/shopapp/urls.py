@@ -1,50 +1,46 @@
 # myshop/shopapp/urls.py
 from django.urls import path
 from . import views
-from .views import (
-    AboutView, DeliveryView, ContactsView, HowToOrderView,
-    ReturnsView, FAQView, SearchView, CategoryView,
-    ProductDetailView, SalesView, HitsView, NewsView,
-    ProfileView, OrdersView, FavoritesView, CartView,
-    SubscribeView, CatalogView
-)
 
 urlpatterns = [
-    # Главная
     path('', views.index, name='home'),
 
-    # Информационные страницы
-    path('about/', AboutView.as_view(), name='about'),
-    path('delivery/', DeliveryView.as_view(), name='delivery'),
-    path('contacts/', ContactsView.as_view(), name='contacts'),
-    path('how-to-order/', HowToOrderView.as_view(), name='how-to-order'),
-    path('returns/', ReturnsView.as_view(), name='returns'),
-    path('faq/', FAQView.as_view(), name='faq'),
+    # Аутентификация
+    path('register/', views.RegisterView.as_view(), name='register'),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
+    path('logout/', views.CustomLogoutView.as_view(), name='logout'),
+    path('profile/', views.ProfileView.as_view(), name='profile'),
 
     # Каталог
-    path('catalog/', CatalogView.as_view(), name='catalog'),
-    path('category/<slug:slug>/', CategoryView.as_view(), name='category'),
-    path('product/<slug:slug>/', ProductDetailView.as_view(), name='product_detail'),
+    path('catalog/', views.CatalogView.as_view(), name='catalog'),
+    path('category/<slug:slug>/', views.CatalogView.as_view(), name='category'),
+    path('product/<slug:slug>/', views.ProductDetailView.as_view(), name='product_detail'),
 
     # Поиск
-    path('search/', SearchView.as_view(), name='search'),
+    path('search/', views.SearchView.as_view(), name='search'),
 
-    # Акции и хиты
-    path('sales/', SalesView.as_view(), name='sales'),
-    path('hits/', HitsView.as_view(), name='hits'),
-    path('news/', NewsView.as_view(), name='news'),
+    # Спецстраницы
+    path('sales/', views.SalesView.as_view(), name='sales'),
+    path('hits/', views.HitsView.as_view(), name='hits'),
+    path('news/', views.NewsView.as_view(), name='news'),
 
-    # Пользователь
-    path('profile/', ProfileView.as_view(), name='profile'),
-    path('orders/', OrdersView.as_view(), name='orders'),
+    # Информационные
+    path('about/', views.AboutView.as_view(), name='about'),
+    path('delivery/', views.DeliveryView.as_view(), name='delivery'),
+    path('contacts/', views.ContactsView.as_view(), name='contacts'),
+    path('how-to-order/', views.HowToOrderView.as_view(), name='how-to-order'),
+    path('returns/', views.ReturnsView.as_view(), name='returns'),
+    path('faq/', views.FAQView.as_view(), name='faq'),
 
-    # Избранное
-    path('favorites/', FavoritesView.as_view(), name='favorites'),
-
-    # Корзина
-    path('cart/', CartView.as_view(), name='cart'),
+    # Корзина и избранное
+    path('cart/', views.CartView.as_view(), name='cart'),
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('favorites/', views.FavoritesView.as_view(), name='favorites'),
+    path('wishlist/toggle/<int:product_id>/', views.toggle_wishlist, name='toggle_wishlist'),
 
-    # Подписка
-    path('subscribe/', SubscribeView.as_view(), name='subscribe'),
+    # Заказы
+    path('orders/', views.OrdersView.as_view(), name='orders'),
+
+    # Подписка ← ДОБАВЬТЕ ЭТУ СТРОКУ
+    path('subscribe/', views.SubscribeView.as_view(), name='subscribe'),
 ]

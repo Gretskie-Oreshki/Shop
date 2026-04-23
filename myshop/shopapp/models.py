@@ -37,11 +37,6 @@ class Category(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
-    @property
-    def product_count(self):
-        return self.products.count()
-
-
 class Product(models.Model):
     """Товары"""
     # Основная информация

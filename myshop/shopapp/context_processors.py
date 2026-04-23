@@ -6,7 +6,7 @@ def global_context(request):
     context = {}
 
     # Настройки сайта
-    context['site_settings'] = SiteSettings.get_settings()
+    #context['site_settings'] = SiteSettings.get_settings()
 
     # Корзина
     if request.user.is_authenticated:

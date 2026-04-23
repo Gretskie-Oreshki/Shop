@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Вход - GretskieOreshkiShop{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h3 class="text-center mb-4">Вход в личный кабинет</h3>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    
+                    <button type="submit" class="btn btn-success w-100 mt-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Войти
+                    </button></form>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="mb-2">Нет аккаунта?</p>
+                    <a href="{% url 'register' %}" class="btn btn-outline-success w-100">
+                        <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
+                    </a>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="{% url 'home' %}" class="text-muted">
+                        <i class="fas fa-arrow-left me-1"></i>Вернуться на главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <small class="text-muted">
+        Для теста: user / user12345 или admin / admin123
+    </small>
+</div>
+{% endblock %}

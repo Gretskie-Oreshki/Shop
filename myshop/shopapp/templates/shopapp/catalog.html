@@ -1,0 +1,49 @@
+<!-- shopapp/templates/shopapp/catalog.html -->
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Каталог товаров - GretskieOreshkiShop{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Каталог товаров</h1>
+
+        {% if products %}
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none text-dark">
+                                {{ product.name }}
+                            </a>
+                        </h5>
+                        <p class="text-muted small">{{ product.weight }}</p>
+                        <p class="text-muted small">{{ product.category.name }}</p>
+
+                        {% if product.old_price %}
+                        <small class="text-muted text-decoration-line-through">{{ product.old_price|intcomma }} ₽</small>
+                        {% endif %}
+                        <span class="h5 text-success fw-bold">{{ product.price|intcomma }} ₽</span>
+
+                        <button class="btn btn-success btn-sm w-100 mt-2 add-to-cart"
+                                data-product-id="{{ product.id }}">
+                            <i class="fas fa-cart-plus me-1"></i>В корзину
+                        </button></form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+            <h3>Товары не найдены</h3>
+            <p>Попробуйте изменить параметры поиска</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

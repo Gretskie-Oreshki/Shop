@@ -1,247 +1,232 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}GretskieOreshkiShop - Греческие орешки{% endblock %}</title>
+<!-- shopapp/templates/shopapp/index.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% block title %}GretskieOreshkiShop - Лучшие греческие орехи с доставкой{% endblock %}
 
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-    {% block extra_css %}{% endblock %}
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <!-- Top bar -->
-        <div class="top-bar bg-dark text-light py-2">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-4">
-                        <span class="small"><i class="fas fa-phone"></i> 8-800-555-35-35</span>
-                        <span class="small ms-3"><i class="fas fa-envelope"></i> info@gretskieoreshki.ru</span>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <span class="badge bg-warning text-dark">Бесплатная доставка от 3000 ₽</span>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <a href="{% url 'about' %}" class="text-light small me-3">О нас</a>
-                        <a href="{% url 'delivery' %}" class="text-light small me-3">Доставка</a>
-                        <a href="{% url 'contacts' %}" class="text-light small">Контакты</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main header -->
-        <div class="main-header py-3 bg-white shadow-sm">
-            <div class="container">
-                <div class="row align-items-center">
-                    <!-- Logo -->
-                    <div class="col-md-2">
-                        <a href="{% url 'home' %}" class="text-decoration-none">
-                            <h1 class="h4 mb-0 text-success">
-                                <i class="fas fa-seedling"></i> GretskieOreshki
-                            </h1>
-                            <small class="text-muted">Shop</small>
-                        </a>
-                    </div>
-
-                    <!-- Catalog button -->
-                    <div class="col-md-2">
-                        <button class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#catalogMenu">
-                            <i class="fas fa-bars"></i> Каталог
-                        </button>
-                    </div>
-
-                    <!-- Search -->
-                    <div class="col-md-5">
-                        <form action="{% url 'search' %}" method="GET" class="d-flex">
-                            <input type="search" name="q" class="form-control" placeholder="Поиск среди тысяч орешков..."
-                                   value="{{ request.GET.q }}">
-                            <button class="btn btn-success ms-2" type="submit">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- User menu -->
-                    <div class="col-md-3 text-end">
-                        <div class="d-flex justify-content-end align-items-center">
-                            <!-- User account -->
-                            <div class="dropdown me-3">
-                                <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                    <i class="fas fa-user"></i>
-                                    {% if user.is_authenticated %}
-                                        {{ user.first_name }}
-                                    {% else %}
-                                        Войти
-                                    {% endif %}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    {% if user.is_authenticated %}
-                                        <li><a class="dropdown-item" href="{% url 'profile' %}">Профиль</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'orders' %}">Заказы</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
-                                    {% else %}
-                                        <li><a class="dropdown-item" href="{% url 'login' %}">Войти</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'register' %}">Регистрация</a></li>
-                                    {% endif %}
-                                </ul>
-                            </div>
-
-                            <!-- Favorites -->
-                            <a href="{% url 'favorites' %}" class="btn btn-outline-danger me-3 position-relative">
-                                <i class="fas fa-heart"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    {{ favorites_count|default:0 }}
-                                </span>
-                            </a>
-
-                            <!-- Cart -->
-                            <a href="{% url 'cart' %}" class="btn btn-success position-relative">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
-                                    {{ cart_count|default:0 }}
-                                </span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Categories menu -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light border-top">
-            <div class="container">
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                <i class="fas fa-star text-warning"></i> Хиты продаж
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{% url 'category' 'gretskie' %}">Грецкие орехи</a>
-                                <a class="dropdown-item" href="{% url 'category' 'mindal' %}">Миндаль</a>
-                                <a class="dropdown-item" href="{% url 'category' 'funduk' %}">Фундук</a>
-                            </div>
-                        </li>
-                        {% for category in categories %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'category' category.slug %}">
-                                {{ category.name }}
-                            </a>
-                        </li>
-                        {% endfor %}
-                        <li class="nav-item">
-                            <a class="nav-link text-danger" href="{% url 'sales' %}">
-                                <i class="fas fa-percent"></i> Акции
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Catalog Offcanvas Menu -->
-    <div class="offcanvas offcanvas-start" id="catalogMenu">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Каталог товаров</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="list-group">
-                {% for category in all_categories %}
-                <a href="{% url 'category' category.slug %}" class="list-group-item list-group-item-action">
-                    <i class="{{ category.icon }} me-2"></i> {{ category.name }}
-                    <span class="badge bg-secondary float-end">{{ category.product_count }}</span>
+{% block content %}
+<!-- Главный баннер -->
+<div class="bg-success text-white rounded-3 p-5 mb-5"
+     style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h1 class="display-4 fw-bold mb-3">
+                Натуральные греческие орехи
+            </h1>
+            <p class="lead mb-4">
+                Отборные орехи прямо из Греции. Бесплатная доставка при заказе от 3000 ₽
+            </p>
+            <div class="d-flex gap-2">
+                <a href="{% url 'catalog' %}" class="btn btn-light btn-lg text-success fw-bold">
+                    <i class="fas fa-shopping-bag me-2"></i>В каталог
                 </a>
-                {% endfor %}
+                <a href="{% url 'sales' %}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-percent me-2"></i>Акции
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <i class="fas fa-seedling fa-5x text-warning"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Преимущества -->
+<div class="row mb-5">
+    <div class="col-md-3 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-truck-fast fa-3x text-success mb-3"></i>
+                <h5>Быстрая доставка</h5>
+                <p class="text-muted small">Доставка по РФ от 1 дня</p>
             </div>
         </div>
     </div>
-
-    <!-- Main Content -->
-    <main class="main-content py-4">
-        <div class="container">
-            {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                {% endfor %}
-            {% endif %}
-
-            {% block content %}{% endblock %}
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer bg-dark text-light pt-5 pb-3 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3">
-                    <h5 class="text-success">GretskieOreshkiShop</h5>
-                    <p class="small">Лучшие греческие орешки с доставкой по всей России. Качество, проверенное временем.</p>
-                    <div class="social-links mt-3">
-                        <a href="#" class="text-light me-2"><i class="fab fa-vk fa-lg"></i></a>
-                        <a href="#" class="text-light me-2"><i class="fab fa-telegram fa-lg"></i></a>
-                        <a href="#" class="text-light me-2"><i class="fab fa-whatsapp fa-lg"></i></a>
-                        <a href="#" class="text-light"><i class="fab fa-instagram fa-lg"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <h5>Покупателям</h5>
-                    <ul class="list-unstyled small">
-                        <li><a href="{% url 'how-to-order' %}" class="text-light">Как заказать</a></li>
-                        <li><a href="{% url 'delivery' %}" class="text-light">Доставка и оплата</a></li>
-                        <li><a href="{% url 'returns' %}" class="text-light">Возврат товара</a></li>
-                        <li><a href="{% url 'faq' %}" class="text-light">Вопросы и ответы</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Категории</h5>
-                    <ul class="list-unstyled small">
-                        {% for category in footer_categories %}
-                        <li><a href="{% url 'category' category.slug %}" class="text-light">{{ category.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Контакты</h5>
-                    <ul class="list-unstyled small">
-                        <li><i class="fas fa-phone text-success"></i> 8-800-555-35-35</li>
-                        <li><i class="fas fa-envelope text-success"></i> info@gretskieoreshki.ru</li>
-                        <li><i class="fas fa-clock text-success"></i> Пн-Вс: 9:00 - 21:00</li>
-                    </ul>
-                    <div class="mt-3">
-                        <h6>Способы оплаты:</h6>
-                        <i class="fab fa-cc-visa fa-2x text-light me-2"></i>
-                        <i class="fab fa-cc-mastercard fa-2x text-light me-2"></i>
-                        <i class="fab fa-cc-mir fa-2x text-light"></i>
-                    </div>
-                </div>
-            </div>
-            <hr class="my-4">
-            <div class="text-center small">
-                <p>&copy; 2024 GretskieOreshkiShop. Все права защищены.</p>
+    <div class="col-md-3 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-medal fa-3x text-warning mb-3"></i>
+                <h5>Гарантия качества</h5>
+                <p class="text-muted small">Сертифицированная продукция</p>
             </div>
         </div>
-    </footer>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-leaf fa-3x text-success mb-3"></i>
+                <h5>100% Органика</h5>
+                <p class="text-muted small">Натуральные продукты</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-ruble-sign fa-3x text-primary mb-3"></i>
+                <h5>Выгодные цены</h5>
+                <p class="text-muted small">Скидки до 30%</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+<!-- Категории -->
+{% if popular_categories %}
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-th-large text-success"></i> Популярные категории
+        </h2>
+        <a href="{% url 'catalog' %}" class="btn btn-outline-success">Все категории</a>
+    </div>
+    <div class="row">
+        {% for category in popular_categories %}
+        <div class="col-6 col-md-3 mb-3">
+            <a href="{% url 'category' category.slug %}" class="text-decoration-none">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="{{ category.icon }} fa-3x text-success mb-3"></i>
+                        <h6 class="card-title text-dark">{{ category.name }}</h6>
+                        <small class="text-muted">{{ category.cnt|default:category.get_products_count }} товаров</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
 
-    {% block extra_js %}{% endblock %}
-</body>
-</html>
+<!-- Хиты продаж -->
+{% if hit_products %}
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-fire text-danger"></i> Хиты продаж
+        </h2>
+        <a href="{% url 'hits' %}" class="btn btn-outline-danger">Все хиты</a>
+    </div>
+    <div class="row">
+        {% for product in hit_products %}
+        <div class="col-6 col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if product.discount %}
+                <div class="position-absolute top-0 start-0 m-2">
+                    <span class="badge bg-danger">-{{ product.discount }}%</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none text-dark">
+                            {{ product.name }}
+                        </a>
+                    </h6>
+                    <p class="text-muted small mb-2">{{ product.weight }}</p>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            {% if product.old_price %}
+                            <small class="text-muted text-decoration-line-through">
+                                {{ product.old_price|intcomma }} ₽
+                            </small>
+                            <br>
+                            {% endif %}
+                            <span class="h5 text-success fw-bold">
+                                {{ product.price|intcomma }} ₽
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- ФОРМА ДОБАВЛЕНИЯ В КОРЗИНУ -->
+                    <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm w-100">
+                            <i class="fas fa-cart-plus me-1"></i>В корзину
+                        </button></form>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Новинки -->
+{% if new_products %}
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-star text-primary"></i> Новинки
+        </h2>
+        <a href="{% url 'news' %}" class="btn btn-outline-primary">Все новинки</a>
+    </div>
+    <div class="row">
+        {% for product in new_products %}
+        <div class="col-6 col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if product.is_new %}
+                <div class="position-absolute top-0 start-0 m-2">
+                    <span class="badge bg-primary">Новинка</span>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title">
+                        <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none text-dark">
+                            {{ product.name }}
+                        </a>
+                    </h6>
+                    <p class="text-muted small mb-2">{{ product.weight }}</p>
+                    <div class="mb-2">
+                        <span class="h5 text-success fw-bold">{{ product.price|intcomma }} ₽</span>
+                    </div>
+
+                    <!-- ФОРМА ДОБАВЛЕНИЯ В КОРЗИНУ -->
+                    <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm w-100">
+                            <i class="fas fa-cart-plus me-1"></i>В корзину
+                        </button></form>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Если нет товаров -->
+{% if not hit_products and not new_products %}
+<div class="text-center py-5 my-5">
+    <i class="fas fa-box-open fa-5x text-muted mb-4"></i>
+    <h3>Товары скоро появятся</h3>
+    <p class="text-muted">Мы обновляем ассортимент. Следите за новинками!</p>
+    <a href="{% url 'admin:index' %}" class="btn btn-success btn-lg">
+        <i class="fas fa-cog me-2"></i>Перейти в админ-панель
+    </a>
+</div>
+{% endif %}
+
+<!-- Подписка на рассылку -->
+<section class="bg-success text-white p-5 rounded-3 mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h3><i class="fas fa-envelope-open-text me-2"></i>Подпишитесь на рассылку!</h3>
+            <p class="lead">Узнавайте первыми о скидках, акциях и новинках</p>
+        </div>
+        <div class="col-md-6">
+            <form class="d-flex" method="POST" action="{% url 'subscribe' %}">
+                {% csrf_token %}
+                <input type="email" name="email" class="form-control form-control-lg"
+                       placeholder="Введите ваш email" required>
+                <button type="submit" class="btn btn-warning btn-lg ms-2 text-nowrap">
+                    <i class="fas fa-paper-plane me-2"></i>Подписаться
+                </button></form>
+            </form>
+            <small class="mt-2 d-block">Никакого спама, только полезная информация</small>
+        </div>
+    </div>
+</section>
+{% endblock %}

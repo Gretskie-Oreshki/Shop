@@ -31,6 +31,8 @@ urlpatterns = [
     path('how-to-order/', views.HowToOrderView.as_view(), name='how-to-order'),
     path('returns/', views.ReturnsView.as_view(), name='returns'),
     path('faq/', views.FAQView.as_view(), name='faq'),
+    path('cart/update/<int:product_id>/', views.update_cart, name='update_cart'),
+    path('cart/remove/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
 
     # Корзина и избранное
     path('cart/', views.CartView.as_view(), name='cart'),
@@ -41,6 +43,6 @@ urlpatterns = [
     # Заказы
     path('orders/', views.OrdersView.as_view(), name='orders'),
 
-    # Подписка ← ДОБАВЬТЕ ЭТУ СТРОКУ
+    # OLLAMA, OpenRouter, deepseek
     path('subscribe/', views.SubscribeView.as_view(), name='subscribe'),
 ]

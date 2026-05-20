@@ -336,7 +336,60 @@ class CartView(TemplateView):
 
 # myshop/shopapp/views.py
 
-# myshop/shopapp/views.py
+def update_cart(request, product_id):
+    """Обновление количества товара в корзине"""
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id=product_id, is_available=True)
+        action = request.POST.get('action')
+
+        if request.user.is_authenticated:
+            cart, _ = Cart.objects.get_or_create(user=request.user)
+            try:
+                cart_item = CartItem.objects.get(cart=cart, product=product)
+                if action == 'increase':
+                    cart_item.quantity += 1
+                    cart_item.save()
+                elif action == 'decrease':
+                    if cart_item.quantity > 1:
+                        cart_item.quantity -= 1
+                        cart_item.save()
+                    else:
+                        cart_item.delete()
+            except CartItem.DoesNotExist:
+                if action == 'increase':
+                    CartItem.objects.create(cart=cart, product=product, quantity=1)
+        else:
+            # Неавторизованный пользователь — корзина в сессии
+            cart = request.session.get('cart', {})
+            str_id = str(product_id)
+            if action == 'increase':
+                cart[str_id] = cart.get(str_id, 0) + 1
+            elif action == 'decrease':
+                if cart.get(str_id, 1) > 1:
+                    cart[str_id] -= 1
+                else:
+                    cart.pop(str_id, None)
+            request.session['cart'] = cart
+
+        messages.success(request, 'Корзина обновлена')
+    return redirect('cart')
+
+
+def remove_from_cart(request, product_id):
+    """Удаление товара из корзины"""
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id=product_id)
+        if request.user.is_authenticated:
+            cart = Cart.objects.filter(user=request.user).first()
+            if cart:
+                CartItem.objects.filter(cart=cart, product=product).delete()
+        else:
+            cart = request.session.get('cart', {})
+            cart.pop(str(product_id), None)
+            request.session['cart'] = cart
+
+        messages.success(request, f'{product.name} удалён из корзины')
+    return redirect('cart')
 
 def add_to_cart(request, product_id):
     """Добавление в корзину"""

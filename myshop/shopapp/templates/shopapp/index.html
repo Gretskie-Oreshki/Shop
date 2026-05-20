@@ -89,7 +89,7 @@
                     <div class="card-body text-center">
                         <i class="{{ category.icon }} fa-3x text-success mb-3"></i>
                         <h6 class="card-title text-dark">{{ category.name }}</h6>
-                        <small class="text-muted">{{ category.cnt|default:category.get_products_count }} товаров</small>
+                        <small class="text-muted">{{ category.cnt|default:0 }} товаров</small>
                     </div>
                 </div>
             </a>
@@ -140,11 +140,11 @@
 
                     <!-- ФОРМА ДОБАВЛЕНИЯ В КОРЗИНУ -->
                     <form method="POST" action="{% url 'add_to_cart' product.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-success btn-sm w-100">
-                            <i class="fas fa-cart-plus me-1"></i>В корзину
-                        </button></form>
-                    </form>
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success btn-sm w-100">
+        <i class="fas fa-cart-plus me-1"></i>В корзину
+    </button>
+</form>
                 </div>
             </div>
         </div>
@@ -189,6 +189,49 @@
                             <i class="fas fa-cart-plus me-1"></i>В корзину
                         </button></form>
                     </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% if recommended_products %}
+<section class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+            <i class="fas fa-magic text-info"></i> Рекомендуем для вас
+        </h2>
+    </div>
+    <div class="row">
+        {% for rec in recommended_products %}
+        <div class="col-6 col-md-3 mb-4">
+            <div class="card h-100 shadow-sm border-info">
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title">
+                        <a href="{% url 'product_detail' rec.product.slug %}" class="text-decoration-none text-dark">
+                            {{ rec.product.name }}
+                        </a>
+                    </h6>
+                    <p class="text-muted small mb-2">{{ rec.product.weight }}</p>
+
+                    <div class="mb-2 p-2 bg-info bg-opacity-10 rounded small">
+                        <i class="fas fa-lightbulb text-info me-1"></i>
+                        <em>{{ rec.reason }}</em>
+                    </div>
+
+                    <div class="mt-auto">
+                        <div class="mb-2">
+                            <span class="h5 text-success fw-bold">{{ rec.product.price|intcomma }} ₽</span>
+                        </div>
+                        <form method="POST" action="{% url 'add_to_cart' rec.product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-info btn-sm w-100">
+                                <i class="fas fa-cart-plus me-1"></i>В корзину
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

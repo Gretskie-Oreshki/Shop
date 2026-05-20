@@ -1,6 +1,6 @@
 # myshop/shopapp/context_processors.py
 from .models import Wishlist, SiteSettings
-
+from .recommendations import SimpleRecommender
 
 def global_context(request):
     context = {}
@@ -27,5 +27,12 @@ def global_context(request):
     from .models import Category
     context['all_categories'] = Category.objects.filter(is_active=True)
     context['hover_categories'] = Category.objects.filter(is_active=True)[:8]
+
+    try:
+        recommender = SimpleRecommender()
+        context['recommended_products'] = recommender.get_recommendations(request.user)
+    except Exception as e:
+        print(f"Ошибка рекомендаций: {e}")
+        context['recommended_products'] = []
 
     return context

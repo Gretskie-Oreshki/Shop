@@ -85,6 +85,7 @@ DATABASES = {
         'PASSWORD': 'admin',  # Пароль который вы задали
         'HOST': 'localhost',
         'PORT': '1779',
+        'CONN_MAX_AGE': 60,
     }
 }
 

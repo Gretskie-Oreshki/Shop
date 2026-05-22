@@ -63,11 +63,11 @@ class UserRegistrationForm(UserCreationForm):
 
         if commit:
             user.save()
-            # Создаем профиль пользователя
-            UserProfile.objects.create(
-                user=user,
-                phone=self.cleaned_data.get('phone', '')
-            )
+            # Сигнал автоматически создаст UserProfile,
+            # поэтому здесь просто обновляем phone, если он передан
+            phone = self.cleaned_data.get('phone')
+            if phone:
+                UserProfile.objects.filter(user=user).update(phone=phone)
         return user
 
 
